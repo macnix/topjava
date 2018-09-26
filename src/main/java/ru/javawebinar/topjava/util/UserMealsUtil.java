@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserMealsUtil {
@@ -25,7 +22,6 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,20,0), "Ужин", 510)
         );
         getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
-        System.out.println(getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000));
 //        .toLocalDate();
 //        .toLocalTime();
     }
@@ -34,9 +30,9 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> calSumPerDay = new HashMap<> ();
 
         return mealList.stream()
-                .sorted((f, s) -> {
-                    calSumPerDay.merge(f.getDateTime().toLocalDate(), f.getCalories(), Integer::sum);
-                    return f.getDateTime().isAfter(s.getDateTime()) ? 1 : 0;})
+
+                .peek(f -> calSumPerDay.merge(f.getDateTime().toLocalDate(), f.getCalories(), Integer::sum))
+                .sorted(Comparator.comparing(UserMeal::getDateTime))
                 .filter(a -> TimeUtil.isBetween(a.getDateTime().toLocalTime(), startTime, endTime))
                 .map(a -> new UserMealWithExceed(a.getDateTime(), a.getDescription(), a.getCalories(),
                         calSumPerDay.get(a.getDateTime().toLocalDate()) > caloriesPerDay))
