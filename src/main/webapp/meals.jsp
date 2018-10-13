@@ -5,43 +5,41 @@
   Time: 14:05
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="java.util.List" %>
+<%@ page import="ru.javawebinar.topjava.model.MealWithExceed" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
 <html>
-
 <head>
-    <title>Meals</title>
+    <title>Title</title>
 </head>
-
 <body>
-<%-- Строка со ссылкой на индекс --%>
-<h3><a href="index.html">Home</a></h3>
-<%-- Снос строки --%>
-<br/>
-<%-- Непосредственно таблица --%>
-<table class="table table-hover table-bordered">
+<a href="index.html">Back to main menu</a>
 
-    <tr>
-        <th>Description</th>
-        <th>Calories</th>
-        <th>Date</th>
-    </tr>
+<table width="80%" border="1" cellpadding="4" cellspacing="0" bgcolor="#faebd7">
+    <div>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Дата</th>
+            <th>Калории</th>
+            <th colspan=2>Action</th>
 
-    <tbody>
-    <c:forEach var="meal" items="${pageContext.request.getAttribute('mealsFiltered')}">
+        </tr>
+    </div>
 
-        <c:set var="col" value="${meal.exceed ? 'red': 'green'}"/>
-        <tr style="color: ${col}">
-            <td>${fn:replace(meal.dateTime,"T"," ")}</td>
+    <c:forEach items="${mealList}" var="meal">
+        <tr style="${meal.exceed ? 'color:red':'color:green'}">
+            <td>${meal.id}</td>
             <td>${meal.description}</td>
+            <td>${formatter.format(meal.dateTime)}</td>
             <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&id=${meal.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
-    </tbody>
+
 </table>
-
+<p><a href="meals?action=insert">ADD meal</a> </p>
 </body>
-
 </html>
